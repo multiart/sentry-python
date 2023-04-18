@@ -1,18 +1,15 @@
 import os
 import threading
-
 from time import sleep, time
-from sentry_sdk._compat import check_thread_support
-from sentry_sdk._queue import Queue, FullError
-from sentry_sdk.utils import logger
-from sentry_sdk.consts import DEFAULT_QUEUE_SIZE
 
+from sentry_sdk._compat import check_thread_support
+from sentry_sdk._queue import FullError, Queue
 from sentry_sdk._types import TYPE_CHECKING
+from sentry_sdk.consts import DEFAULT_QUEUE_SIZE
+from sentry_sdk.utils import logger
 
 if TYPE_CHECKING:
-    from typing import Any
-    from typing import Optional
-    from typing import Callable
+    pass
 
 
 _TERMINATOR = object()
@@ -78,14 +75,20 @@ class BackgroundWorker(object):
         """
         logger.debug("background worker got kill request")
         with self._lock:
+            print('step 1')
             if self._thread:
                 try:
+                    print('step 2')
                     self._queue.put_nowait(_TERMINATOR)
+                    print('step 3')
                 except FullError:
                     logger.debug("background worker queue full, kill failed")
 
+                print('step 4')
                 self._thread = None
                 self._thread_for_pid = None
+            print('step 5')
+        print('step 6')
 
     def flush(self, timeout, callback=None):
         # type: (float, Optional[Any]) -> None
