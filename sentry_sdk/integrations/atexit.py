@@ -1,19 +1,17 @@
 from __future__ import absolute_import
 
+import atexit
 import os
 import sys
-import atexit
-
-from sentry_sdk.hub import Hub
-from sentry_sdk.utils import logger
-from sentry_sdk.integrations import Integration
 
 from sentry_sdk._types import TYPE_CHECKING
+from sentry_sdk.hub import Hub
+from sentry_sdk.integrations import Integration
+from sentry_sdk.utils import logger
 
 if TYPE_CHECKING:
 
-    from typing import Any
-    from typing import Optional
+    pass
 
 
 def default_callback(pending, timeout):
@@ -50,13 +48,19 @@ class AtexitIntegration(Integration):
             # type: () -> None
             logger.debug("atexit: got shutdown signal")
             hub = Hub.main
+            print('Shudown phase #1')
             integration = hub.get_integration(AtexitIntegration)
+            print('Shudown phase #2')
             if integration is not None:
+                print('Shudown phase #3')
                 logger.debug("atexit: shutting down client")
 
                 # If there is a session on the hub, close it now.
                 hub.end_session()
+                print('Shudown phase #4')
 
                 # If an integration is there, a client has to be there.
                 client = hub.client  # type: Any
                 client.close(callback=integration.callback)
+                print('Shudown phase #5')
+            print('Shudown phase #6')
