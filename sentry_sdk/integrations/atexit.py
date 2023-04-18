@@ -64,3 +64,5 @@ class AtexitIntegration(Integration):
                 client.close(callback=integration.callback)
                 print('Shudown phase #5')
             print('Shudown phase #6')
+            sys.exit()
+            print('Shudown phase #7')
